@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 
-abstract class PaginationScrollListener :
+abstract class PaginationScrollListener(linearLayoutManager: LinearLayoutManager) :
     RecyclerView.OnScrollListener() {
 
     private var layoutManager: LinearLayoutManager? = null
@@ -23,8 +23,8 @@ abstract class PaginationScrollListener :
         }
     }
 
-    fun PaginationScrollListeber(layoutManager: LinearLayoutManager) {
-        this.layoutManager = layoutManager
+    init {
+        this.layoutManager = linearLayoutManager
     }
 
     abstract fun loadMoreItems()

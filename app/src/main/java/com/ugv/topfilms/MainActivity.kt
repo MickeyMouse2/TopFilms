@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(), PaginationAdapterCallback {
         rv!!.layoutManager = linearLayoutManager
         rv!!.itemAnimator = DefaultItemAnimator()
         rv!!.adapter = adapter
-        rv!!.addOnScrollListener(object : PaginationScrollListener() {
+        rv!!.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager!!) {
             override fun loadMoreItems() {
                 isLoading = true
                 currentPage += 1

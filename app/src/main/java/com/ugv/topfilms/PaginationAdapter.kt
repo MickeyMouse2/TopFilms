@@ -10,9 +10,11 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.ugv.topfilms.models.Result
 import com.ugv.topfilms.utils.PaginationAdapterCallback
@@ -63,8 +65,7 @@ open class PaginationAdapter internal constructor(private var context: Context?)
                 heroVh!!.mMovieTitle.text = result!!.title
                 heroVh.mYear.text = formatYearLabel(result)
                 heroVh.mMovieDesc.text = result.overview
-                Glide.with(context!!)
-                    .load(BASE_URL_IMG + result.backdropPath)
+                loadImage(result.backdropPath!!)
                     .into(heroVh.mPosterImg)
             }
             ITEM -> {
@@ -73,8 +74,7 @@ open class PaginationAdapter internal constructor(private var context: Context?)
                 movieVH.mYear.text = formatYearLabel(result)
                 movieVH.mMovieDesc.text = result.overview
 
-                Glide.with(context!!)
-                    .load(BASE_URL_IMG + result.backdropPath)
+                loadImage(result.backdropPath!!)
                     .listener(object : RequestListener<Drawable?> {
                         override fun onLoadFailed(
                             @Nullable e: GlideException?,
@@ -114,6 +114,14 @@ open class PaginationAdapter internal constructor(private var context: Context?)
                 }
             }
         }
+    }
+
+    private fun loadImage(@NonNull posterPath: String): RequestBuilder<Drawable> {
+        return Glide
+            .with(context!!)
+            .load(BASE_URL_IMG + posterPath)
+            .apply( RequestOptions()
+                .centerCrop())
     }
 
     override fun getItemCount(): Int {

@@ -14,21 +14,20 @@ object MovieApi {
     private var retrofit: Retrofit? = null
     private const val CACHE_SIZE = 10 * 1024 * 1024 // 10MB Cache size
         .toLong()
+    val maxStale = 60 * 60 * 24 * 28 // tolerate 4-weeks stale
+    val maxAge = 60 // read from cache for 1 minute
 
     private fun buildClient(context: Context): OkHttpClient {
 
         // Build interceptor
-        val REWRITE_CACHE_CONTROL_INTERCEPTOR =
-            label@ Interceptor { chain: Interceptor.Chain ->
+        val REWRITE_CACHE_CONTROL_INTERCEPTOR = { chain: Interceptor.Chain ->
                 val originalResponse = chain.proceed(chain.request())
                 if (NetworkUtil.hasNetwork(context)) {
-                    val maxAge = 60 // read from cache for 1 minute
-                    return@label originalResponse.newBuilder()
+                    originalResponse.newBuilder()
                         .header("Cache-Control", "public, max-age=$maxAge")
                         .build()
                 } else {
-                    val maxStale = 60 * 60 * 24 * 28 // tolerate 4-weeks stale
-                    return@label originalResponse.newBuilder()
+                    originalResponse.newBuilder()
                         .header("Cache-Control", "public, only-if-cached, max-stale=$maxStale")
                         .build()
                 }
